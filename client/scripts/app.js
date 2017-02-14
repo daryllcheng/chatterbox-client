@@ -1,6 +1,7 @@
 var count = 0;
 var App = function() {
   this.server = 'http://parse.sfs.hackreactor.com/chatterbox/classes/messages';
+  this.roomList = [];
 };
 
 App.prototype.init = function() {
@@ -32,10 +33,11 @@ App.prototype.fetch = function() {
   type: 'GET',
   data: {'order': '-createdAt'},
   success: function (data) {
-    console.log(data);
+    console.log(data.results);
     var results = data.results;
     for (var index = 0; index < results.length; index++) {
     App.prototype.renderMessage(results[index]);
+    App.prototype.renderRoom(results[index]);
     }
   },
   error: function (data) {
@@ -46,10 +48,10 @@ App.prototype.fetch = function() {
   // console.log(this.server);
 });
 var context = this;
-setTimeout(function() {
-  context.clearMessages();
-  context.fetch();
-}, 10000)
+// setTimeout(function() {
+//   context.clearMessages();
+//   context.fetch();
+// }, 10000)
 };
 
 App.prototype.renderMessage = function(message) {
@@ -57,7 +59,6 @@ App.prototype.renderMessage = function(message) {
   var message = '<span class="messageText" id="message">' + escapeHtml(message.text) + '</span>';
 
   $('#chats').append('<div class="oneMessage">' + username + '<br>' + message + '</div>');
-  console.log($('#chats'));
 };
 
 App.prototype.clearMessages = function() {
@@ -65,9 +66,14 @@ App.prototype.clearMessages = function() {
   $('blink').remove();
 };
 
-App.prototype.renderRoom = function(room) {
-  $('select').html('<option value=' + room + '>' + room + '</option>');
-
+App.prototype.renderRoom = function(obj) {
+  var roomname = escapeHtml(obj.roomname);
+  console.log(this.roomList);
+  if (this.roomList.indexOf(roomname) === -1) {
+    this.roomList.push(roomname);
+    $('select').append('<option value=' + roomname + '>' + roomname + '</option>');
+  }
+  
 }
 
 App.prototype.handleUsernameClick = function() {
