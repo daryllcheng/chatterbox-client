@@ -20,7 +20,6 @@
     </script>
     <!-- your scripts -->
     <script src="env/config.js"></script>
-    <script src="scripts/MessageObj.js"></script>
     <script src="scripts/app.js"></script>
   </head>
   <body>
@@ -32,9 +31,9 @@
           <option value='room' selected>room</option>
         </select>
       </div>
-      <div class='writingMessage'>
-        <input type="text" name="messageText">
-        <button class='submitButton' name="submit">
+      <div class='writingMessage' id='send'>
+        <input type="text" name="messageText" id='message'>
+        <button class='submit' name='submit'>
           Submit
         </button>
       </div>
