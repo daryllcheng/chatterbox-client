@@ -88,3 +88,9 @@ form input[type=text] {
     background-color: #0090da;
 }
 
+.oneMessage {
+    background-color: lightblue;
+    border: 2px white solid;
+    margin: 3px;
+}
+
