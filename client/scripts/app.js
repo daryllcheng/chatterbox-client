@@ -59,8 +59,8 @@ App.prototype.fetch = function() {
 };
 
 App.prototype.renderMessage = function(message) {
-  var username = '<a class="username">' + message.username + ': </a>';
-  var message = '<span class="messageText">' + message.text + '</span>';
+  var username = '<a class="username">' + escapeHtml(message.username) + ': </a>';
+  var message = '<span class="messageText">' + escapeHtml(message.text) + '</span>';
 
   $('#chats').append('<div class="oneMessage">' + username + '<br>' + message + '</div>');
 };
@@ -80,6 +80,12 @@ App.prototype.handleUsernameClick = function() {
   var restore = function(friendUsername) {
     friendsArr.push(friendUsername);
   }
+}
+
+function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
 }
 
 
