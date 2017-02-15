@@ -11,6 +11,7 @@ App.prototype.init = function() {
   var context = this;
   $('#send').on('submit', App.prototype.handleSubmit.bind(context));
   $('#roomSelect').on('change', App.prototype.handleRoomChange.bind(context));
+  $('#chats').on('click', '.username', App.prototype.handleUsernameClick.bind(context));
   context.fetch();
 
   var context = this;
@@ -51,7 +52,6 @@ App.prototype.fetch = function() {
   type: 'GET',
   data: {'order': '-createdAt'},
   success: function (data) {
-    console.log(data.results);
     var results = data.results;
     if (!results || !results.length) {
       return;
@@ -79,7 +79,7 @@ App.prototype.renderMessages = function(messages) {
   console.log('rendermessage this', this);
   context.clearMessages();
   messages.filter(function(message) {
-    return messages.roomname === context.roomname || context.roomname === 'lobby' && !message.roomname;
+    return message.roomname === context.roomname || context.roomname === 'lobby' && !message.roomname;
   }).forEach(context.renderMessage.bind(context));
 };
 
@@ -92,10 +92,11 @@ App.prototype.renderMessage = function(message) {
    var $chat = $('<div class="chat"/>');
   var $username = $('<span class="username"/>');
   $username.text(message.username + ': ').attr('data-roomname', message.roomname).attr('data-username', message.username).appendTo($chat);
-
-  // if (context.friends[message.username] === true) {
-  //     $username.addClass('friend');
-  //   }
+console.log('context friends: ', context.friends);
+console.log('message username: ,', message.username);
+  if (context.friends[message.username] === true) {
+      $username.addClass('friend');
+    }
 
     var $message = $('<br><span/>');
     $message.text(message.text).appendTo($chat);
@@ -138,11 +139,19 @@ App.prototype.createRooms = function(messages) {
   $('#roomSelect').val(context.roomname);
 }
 
-App.prototype.handleUsernameClick = function() {
-  var friendsArr = []
-  var restore = function(friendUsername) {
-    friendsArr.push(friendUsername);
-  }
+App.prototype.handleUsernameClick = function(event) {
+  var username = $(event.target).data('username');
+  var context = this;
+  console.log('handleName', context);
+    if (username !== undefined) {
+      context.friends[username] = !context.friends[username];
+      var selector = '[data-username="' + username.replace(/"/g, '\\\"') + '"]';
+      var $usernames = $(selector).toggleClass('friend');
+    }
+  // var friendsArr = []
+  // var restore = function(friendUsername) {
+  //   friendsArr.push(friendUsername);
+  // }
 }
 
 App.prototype.handleSubmit = function(event) {
@@ -161,19 +170,32 @@ App.prototype.handleSubmit = function(event) {
 App.prototype.handleRoomChange = function(event) {
   var context = this;
   var selectIndex = $('#roomSelect').prop('selectedIndex');
-  
-  if (selectIndex === 0) {
-    var roomname = prompt('Enter room name');
-    if (roomname) {
-      context.roomname = roomname;
-      $('select').append('<option value=' + roomname + '>' + roomname + '</option>');
-      $('#roomSelect').val(roomname);
+    if (selectIndex === 0) {
+      var roomname = prompt('Enter room name');
+      if (roomname) {
+        context.roomname = roomname;
+        context.renderRoom(roomname);
+        $('#roomSelect').val(roomname);
+      }
+    } else {
+      context.roomname = $('#roomSelect').val();
     }
-  } else {
-    context.roomname = $('#roomSelect').val();
-    App.prototype.renderMessage(context.messages);
-  }
-}
+    // Rerender messages
+    context.renderMessages(context.messages);
+  // var selectIndex = $('#roomSelect').prop('selectedIndex');
+  
+  // if (selectIndex === 0) {
+  //   var roomname = prompt('Enter room name');
+  //   if (roomname) {
+  //     context.roomname = roomname;
+  //     $('select').append('<option value=' + roomname + '>' + roomname + '</option>');
+  //     $('#roomSelect').val(roomname);
+  //   }
+  // } else {
+  //   context.roomname = $('#roomSelect').val();
+  //   App.prototype.renderMessage(context.messages);
+  // }
+};
 
 function escapeHtml(str) {
   var div = document.createElement('div');
