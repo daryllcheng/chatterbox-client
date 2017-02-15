@@ -23,22 +23,25 @@
     <script src="scripts/app.js"></script>
   </head>
   <body>
-    <div id="main">
-      <h1>chatterbox</h1>
+    <div id="main" class='container center'>
+      <h1 class='center headerText' id='title'>chatterbox</h1>
       <!-- Your HTML goes here! -->
-      <div class='chooseRoom'>
+      <div class='chooseRoom center'>
         <select name="room" id='roomSelect'>
           <option value='room' selected>room</option>
         </select>
       </div>
-      <div class='writingMessage' id='send'>
-        <input type="text" name="messageText" id='message'>
-        <button class='submit' name='submit'>
-          Submit
-        </button>
+      <form action='#' method='post'class='writingMessage' id='send'>
+        <input type="text" name="messageText" class='center' id='message'>
+        <input type='submit' class='submit button center' name='submit'>
+      </form>
       </div>
-      </div>
-    </div>
     <div id="chats"></div>
+    <script>   
+      $(function() {
+        var app = new App();
+        app.init();
+      })
+    </script>
   </body>
 </html>
